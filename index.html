@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Plano visual da automação JohnLLM conectando Ads, CRM, ERP, agentes e análise de dados.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23071019'/%3E%3Cpath d='M38 14v28c0 7-4 10-11 10-4 0-7-1-10-4l5-7c2 2 3 3 5 3 2 0 3-1 3-4V14z' fill='%234ed8c7'/%3E%3C/svg%3E">
+  <title>JohnLLM — Fluxo operacional inteligente</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #eef3f8;
+      --muted: #9caaba;
+      --dim: #6e7c8c;
+      --canvas: #071019;
+      --surface: #0d1823;
+      --surface-2: #111f2c;
+      --line: #253544;
+      --cyan: #4ed8c7;
+      --lime: #b8ed78;
+      --amber: #ffc86a;
+      --coral: #ff857d;
+      --blue: #79adff;
+      --purple: #bd9cff;
+      --radius: 18px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 82% 3%, rgba(78,216,199,.11), transparent 28rem),
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        var(--canvas);
+      background-size: auto, 32px 32px, 32px 32px, auto;
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+    .wrap { width: min(calc(100% - 40px), var(--max)); margin-inline: auto; }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--cyan);
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 24px; height: 2px; background: currentColor; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      background: rgba(7,16,25,.88);
+      backdrop-filter: blur(16px);
+    }
+    .topbar-inner { min-height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.02em; text-decoration: none; }
+    .brand-mark {
+      width: 30px; height: 30px; display: grid; place-items: center;
+      border: 1px solid rgba(78,216,199,.55); border-radius: 9px; color: var(--cyan);
+      box-shadow: inset 0 0 18px rgba(78,216,199,.10);
+    }
+    nav { display: flex; gap: 6px; }
+    nav a { color: var(--muted); text-decoration: none; font-size: .86rem; padding: 8px 10px; border-radius: 8px; }
+    nav a:hover, nav a:focus-visible { color: var(--ink); background: rgba(255,255,255,.06); outline: none; }
+
+    header { padding: 86px 0 48px; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(300px, .65fr); gap: 68px; align-items: end; }
+    h1 { font-size: clamp(2.8rem, 6.6vw, 6.5rem); line-height: .92; letter-spacing: -.065em; margin: 20px 0 28px; max-width: 940px; }
+    h1 span { color: var(--cyan); }
+    .lede { color: var(--muted); font-size: clamp(1rem, 1.8vw, 1.25rem); max-width: 760px; margin: 0; }
+    .hero-aside { border-left: 1px solid var(--line); padding-left: 28px; }
+    .hero-aside strong { display: block; font-size: 1.1rem; margin-bottom: 8px; }
+    .hero-aside p { color: var(--muted); margin: 0 0 20px; }
+    .status-key { display: flex; flex-wrap: wrap; gap: 8px; }
+    .status { display: inline-flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 99px; font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--dim); }
+    .status.live::before { background: var(--lime); box-shadow: 0 0 0 4px rgba(184,237,120,.1); }
+    .status.build::before { background: var(--amber); }
+    .status.future::before { background: var(--purple); }
+
+    section { padding: 72px 0; }
+    .section-head { display: grid; grid-template-columns: .6fr 1fr; gap: 40px; align-items: end; margin-bottom: 34px; }
+    h2 { font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1; letter-spacing: -.045em; margin: 12px 0 0; }
+    .section-intro { color: var(--muted); max-width: 660px; margin: 0; }
+
+    .principle {
+      display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden; background: rgba(13,24,35,.84);
+    }
+    .principle > div { padding: 24px; border-right: 1px solid var(--line); }
+    .principle > div:last-child { border: 0; }
+    .principle b { display: block; color: var(--cyan); font-size: 1.5rem; margin-bottom: 8px; }
+    .principle span { color: var(--muted); font-size: .9rem; }
+
+    .flow-shell { border: 1px solid var(--line); border-radius: 26px; overflow: hidden; background: rgba(7,16,25,.76); }
+    .flow-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px; border-bottom: 1px solid var(--line); }
+    .flow-toolbar p { margin: 0; color: var(--muted); font-size: .85rem; }
+    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter {
+      border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 99px;
+      padding: 7px 11px; cursor: pointer; min-height: 36px;
+    }
+    .filter:hover, .filter:focus-visible, .filter.active { color: var(--canvas); background: var(--cyan); border-color: var(--cyan); outline: none; }
+    .flow { display: grid; grid-template-columns: repeat(7, minmax(135px, 1fr)); padding: 34px 24px 28px; overflow-x: auto; }
+    .flow-step { position: relative; min-width: 135px; padding: 0 10px; transition: opacity .2s ease, transform .2s ease; }
+    .flow-step:not(:last-child)::after { content: ""; position: absolute; top: 32px; left: calc(50% + 32px); right: calc(-50% + 32px); height: 1px; background: linear-gradient(90deg, var(--cyan), rgba(78,216,199,.22)); }
+    .flow-step:not(:last-child)::before { content: "›"; position: absolute; z-index: 2; top: 19px; right: -5px; color: var(--cyan); font-size: 1.5rem; }
+    .node-icon { width: 64px; height: 64px; display: grid; place-items: center; margin: 0 auto 16px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface-2); color: var(--cyan); font-weight: 850; position: relative; z-index: 3; }
+    .flow-step h3 { text-align: center; font-size: .92rem; line-height: 1.2; margin: 0 0 7px; }
+    .flow-step p { text-align: center; color: var(--dim); font-size: .75rem; line-height: 1.4; margin: 0; }
+    .flow-step.is-muted { opacity: .22; transform: scale(.97); }
+    .protocol-row { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--line); }
+    .protocol { padding: 16px; text-align: center; border-right: 1px solid var(--line); }
+    .protocol:last-child { border: 0; }
+    .protocol strong { display: block; font-size: .8rem; color: var(--amber); }
+    .protocol small { color: var(--dim); }
+
+    .agents-grid { display: grid; grid-template-columns: 1.1fr repeat(3, 1fr); gap: 12px; }
+    .agent { min-height: 194px; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); position: relative; overflow: hidden; }
+    .agent::after { content: attr(data-index); position: absolute; right: 12px; bottom: -22px; color: rgba(255,255,255,.035); font-size: 6rem; font-weight: 900; line-height: 1; }
+    .agent.primary { grid-row: span 2; background: linear-gradient(160deg, rgba(78,216,199,.12), var(--surface) 55%); }
+    .agent-label { color: var(--cyan); font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .agent h3 { font-size: 1.25rem; margin: 18px 0 8px; }
+    .agent p { color: var(--muted); font-size: .88rem; margin: 0; max-width: 34ch; }
+    .agent .status { margin-top: 20px; position: relative; z-index: 2; }
+
+    .decision-strip { margin-top: 18px; display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; align-items: stretch; }
+    .decision { padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+    .decision b { display: block; color: var(--lime); margin-bottom: 6px; }
+    .decision p { margin: 0; color: var(--muted); font-size: .86rem; }
+    .arrow { display: grid; place-items: center; padding: 10px; color: var(--cyan); font-size: 1.5rem; }
+
+    .metrics { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+    .metric { padding: 23px 18px; background: var(--surface); border-right: 1px solid var(--line); }
+    .metric:last-child { border: 0; }
+    .metric strong { display: block; font-size: 1.45rem; letter-spacing: -.03em; color: var(--amber); }
+    .metric span { color: var(--muted); font-size: .82rem; }
+    .formula { margin-top: 16px; padding: 18px 22px; border-left: 3px solid var(--cyan); background: rgba(78,216,199,.055); color: var(--muted); }
+    .formula strong { color: var(--ink); }
+
+    .roadmap { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; counter-reset: phase; }
+    .phase { counter-increment: phase; padding: 26px 22px; background: var(--surface); min-height: 292px; }
+    .phase::before { content: "0" counter(phase); display: block; color: var(--cyan); font: 800 2.4rem/1 ui-monospace, SFMono-Regular, Menlo, monospace; margin-bottom: 28px; }
+    .phase h3 { margin: 0 0 10px; }
+    .phase p { color: var(--muted); font-size: .85rem; }
+    .phase ul { padding-left: 18px; margin: 18px 0 0; color: var(--muted); font-size: .82rem; }
+    .phase li + li { margin-top: 7px; }
+
+    .guardrails { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .guardrail { display: grid; grid-template-columns: 42px 1fr; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: rgba(13,24,35,.74); }
+    .guardrail i { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: rgba(255,133,125,.1); color: var(--coral); font-style: normal; font-weight: 900; }
+    .guardrail h3 { font-size: 1rem; margin: 0 0 5px; }
+    .guardrail p { color: var(--muted); font-size: .84rem; margin: 0; }
+
+    footer { padding: 30px 0 60px; color: var(--dim); font-size: .82rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); padding-top: 22px; }
+
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    @media (max-width: 980px) {
+      .hero, .section-head { grid-template-columns: 1fr; gap: 28px; }
+      .hero-aside { border-left: 0; border-top: 1px solid var(--line); padding: 24px 0 0; }
+      .principle { grid-template-columns: 1fr 1fr; }
+      .principle > div:nth-child(2) { border-right: 0; }
+      .principle > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+      .agents-grid { grid-template-columns: repeat(2, 1fr); }
+      .agent.primary { grid-row: auto; grid-column: span 2; }
+      .metrics { grid-template-columns: repeat(3, 1fr); }
+      .metric:nth-child(3) { border-right: 0; }
+      .metric:nth-child(-n+3) { border-bottom: 1px solid var(--line); }
+      .roadmap { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 680px) {
+      .wrap { width: min(calc(100% - 28px), var(--max)); }
+      nav { display: none; }
+      header { padding-top: 58px; }
+      section { padding: 54px 0; }
+      h1 { font-size: clamp(2.65rem, 15vw, 4.2rem); }
+      .principle, .agents-grid, .metrics, .roadmap, .guardrails { grid-template-columns: 1fr; }
+      .principle > div, .principle > div:nth-child(2), .metric, .metric:nth-child(3) { border-right: 0; border-bottom: 1px solid var(--line); }
+      .principle > div:last-child, .metric:last-child { border-bottom: 0; }
+      .agent.primary { grid-column: auto; }
+      .flow-toolbar { align-items: flex-start; flex-direction: column; }
+      .flow { display: flex; flex-direction: column; padding: 25px 20px; overflow: visible; }
+      .flow-step { display: grid; grid-template-columns: 54px 1fr; column-gap: 15px; padding: 0 0 30px; min-width: 0; }
+      .node-icon { width: 54px; height: 54px; margin: 0; grid-row: span 2; }
+      .flow-step h3, .flow-step p { text-align: left; }
+      .flow-step:not(:last-child)::after { top: 54px; bottom: 0; left: 27px; right: auto; width: 1px; height: auto; background: linear-gradient(var(--cyan), rgba(78,216,199,.18)); }
+      .flow-step:not(:last-child)::before { content: "⌄"; top: auto; bottom: 3px; left: 19px; right: auto; font-size: 1rem; }
+      .protocol-row { grid-template-columns: 1fr 1fr; }
+      .protocol { border-bottom: 1px solid var(--line); }
+      .protocol:nth-child(2n) { border-right: 0; }
+      .protocol:nth-last-child(-n+2) { border-bottom: 0; }
+      .decision-strip { grid-template-columns: 1fr; }
+      .arrow { transform: rotate(90deg); }
+      .roadmap { background: transparent; gap: 10px; border: 0; }
+      .phase { border: 1px solid var(--line); border-radius: var(--radius); min-height: 0; }
+      footer .wrap { flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+
+    @media print {
+      .topbar, .filters { display: none; }
+      body { background: white; color: #10202b; }
+      .flow-shell, .agent, .phase, .decision, .metric, .guardrail, .principle { background: white; break-inside: avoid; }
+      :root { --ink: #10202b; --muted: #435461; --dim: #5c6b75; --line: #bcc7ce; --surface: #fff; --surface-2: #f3f6f7; --canvas: #fff; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="wrap topbar-inner">
+      <a class="brand" href="#inicio" aria-label="Voltar ao início"><span class="brand-mark">J</span> JohnLLM Flow</a>
+      <nav aria-label="Navegação principal">
+        <a href="#fluxo">Fluxo</a><a href="#agentes">Agentes</a><a href="#dados">Dados</a><a href="#plano">Plano</a><a href="#controles">Controles</a>
+      </nav>
+    </div>
+  </div>
+
+  <header id="inicio">
+    <div class="wrap hero">
+      <div>
+        <span class="eyebrow">Arquitetura operacional proposta</span>
+        <h1>Da mídia à <span>margem</span>, com agentes no controle.</h1>
+        <p class="lede">Um fluxo unificado para transformar sinais de Meta e Google em atendimento, vendas, inteligência e decisões — usando o que o JohnLLM já possui.</p>
+      </div>
+      <aside class="hero-aside" aria-label="Legenda de maturidade">
+        <strong>O mapa separa realidade de evolução.</strong>
+        <p>Nem tudo abaixo está integrado ponta a ponta. Os marcadores deixam claro o que já opera e o que precisa ser construído.</p>
+        <div class="status-key"><span class="status live">Existente</span><span class="status build">Em evolução</span><span class="status future">Proposto</span></div>
+      </aside>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="principio-title">
+      <div class="wrap">
+        <span class="eyebrow">Princípio central</span>
+        <h2 id="principio-title" style="max-width:850px;margin-bottom:30px">A IA coordena. Os sistemas continuam sendo a verdade.</h2>
+        <div class="principle">
+          <div><b>Webhook</b><span>avisa que algo aconteceu</span></div>
+          <div><b>Fila</b><span>protege, ordena e permite tentar novamente</span></div>
+          <div><b>API</b><span>consulta e executa ações determinísticas</span></div>
+          <div><b>MCP</b><span>oferece ferramentas controladas ao GPT</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fluxo" aria-labelledby="flow-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Fluxo ponta a ponta</span><h2 id="flow-title">Uma única trilha de valor</h2></div>
+          <p class="section-intro">A jornada conecta aquisição, relacionamento, operação e resultado financeiro. Use os filtros para destacar as etapas por domínio.</p>
+        </div>
+        <div class="flow-shell">
+          <div class="flow-toolbar">
+            <p>Selecione uma visão</p>
+            <div class="filters" role="group" aria-label="Filtrar etapas do fluxo">
+              <button class="filter active" data-filter="all" aria-pressed="true">Completa</button>
+              <button class="filter" data-filter="marketing" aria-pressed="false">Marketing</button>
+              <button class="filter" data-filter="sales" aria-pressed="false">Comercial</button>
+              <button class="filter" data-filter="ops" aria-pressed="false">Operação</button>
+              <button class="filter" data-filter="analytics" aria-pressed="false">Análise</button>
+            </div>
+          </div>
+          <div class="flow" aria-label="Fluxo de dados da mídia até a decisão">
+            <article class="flow-step" data-domain="marketing"><div class="node-icon">01</div><h3>Meta + Google</h3><p>campanhas, anúncios e investimento</p></article>
+            <article class="flow-step" data-domain="marketing"><div class="node-icon">02</div><h3>Eventos</h3><p>lead, mensagem, clique e conversão</p></article>
+            <article class="flow-step" data-domain="sales"><div class="node-icon">03</div><h3>CRM AI</h3><p>identidade, conversa, funil e vendedor</p></article>
+            <article class="flow-step" data-domain="sales analytics"><div class="node-icon">04</div><h3>JohnLLM</h3><p>CEO roteia para o especialista certo</p></article>
+            <article class="flow-step" data-domain="ops"><div class="node-icon">05</div><h3>ERP</h3><p>produto, estoque, pedido e faturamento</p></article>
+            <article class="flow-step" data-domain="analytics"><div class="node-icon">06</div><h3>Camada analítica</h3><p>fatos, identidade e métricas oficiais</p></article>
+            <article class="flow-step" data-domain="analytics"><div class="node-icon">07</div><h3>Decisão</h3><p>GPT, dashboard, alertas e ações</p></article>
+          </div>
+          <div class="protocol-row" aria-label="Protocolos entre as etapas">
+            <div class="protocol"><strong>Webhook</strong><small>captura imediata</small></div>
+            <div class="protocol"><strong>Fila / outbox</strong><small>entrega confiável</small></div>
+            <div class="protocol"><strong>API</strong><small>CRM e serviços</small></div>
+            <div class="protocol"><strong>MCP + CLI</strong><small>ferramentas do agente</small></div>
+            <div class="protocol"><strong>Eventos / ELT</strong><small>consolidação</small></div>
+            <div class="protocol"><strong>SSE / BI</strong><small>apresentação</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="agentes" aria-labelledby="agents-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Equipe digital</span><h2 id="agents-title">Reaproveitar antes de multiplicar</h2></div>
+          <p class="section-intro">O ganho vem de dar ferramentas e contratos comuns aos especialistas atuais. Novos agentes só entram quando houver contexto, autorização ou objetivo realmente independente.</p>
+        </div>
+        <div class="agents-grid">
+          <article class="agent primary" data-index="0"><span class="agent-label">Control plane</span><h3>CEO / Orquestrador</h3><p>Entende o objetivo, delega ao domínio certo, cruza respostas, aplica gates e entrega a decisão com evidências.</p><span class="status live">Existente</span></article>
+          <article class="agent" data-index="4"><span class="agent-label">Aquisição</span><h3>Tráfego + Google</h3><p>Meta, Google Ads, GA4, Search, Merchant, criativos e qualidade da aquisição.</p><span class="status live">Existente</span></article>
+          <article class="agent" data-index="C"><span class="agent-label">Receita</span><h3>Comercial / CRM</h3><p>Lead, conversa, qualificação, oportunidade, atendimento e próxima ação.</p><span class="status build">Em evolução</span></article>
+          <article class="agent" data-index="8"><span class="agent-label">Operação</span><h3>CEO-ERP</h3><p>Produtos, preço, estoque, pedidos, vendas e integração operacional.</p><span class="status live">Existente</span></article>
+          <article class="agent" data-index="6"><span class="agent-label">Economia</span><h3>Financeiro</h3><p>Receita líquida, margem, CAC, LTV, caixa e rentabilidade por operação.</p><span class="status live">Existente</span></article>
+          <article class="agent" data-index="1"><span class="agent-label">Construção</span><h3>Plataforma</h3><p>APIs, contratos, ferramentas MCP, eventos e integrações entre sistemas.</p><span class="status live">Existente</span></article>
+          <article class="agent" data-index="5"><span class="agent-label">Confiabilidade</span><h3>Operações</h3><p>Saúde, credenciais, observabilidade, filas, jobs e recuperação.</p><span class="status live">Existente</span></article>
+        </div>
+        <div class="decision-strip" aria-label="Ciclo de decisão dos agentes">
+          <div class="decision"><b>1. Ler</b><p>Dados agregados, com fonte, período e frescor.</p></div><div class="arrow" aria-hidden="true">→</div>
+          <div class="decision"><b>2. Recomendar</b><p>Separar fatos, inferências, risco e impacto esperado.</p></div><div class="arrow" aria-hidden="true">→</div>
+          <div class="decision"><b>3. Agir e medir</b><p>Executar dentro do limite autorizado e comparar o resultado.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dados" aria-labelledby="data-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Camada de verdade</span><h2 id="data-title">Métrica de anúncio não é venda</h2></div>
+          <p class="section-intro">A análise só se torna gerencial quando a mesma jornada liga campanha, cliente, pedido, pagamento e margem.</p>
+        </div>
+        <div class="metrics">
+          <div class="metric"><strong>Campanha</strong><span>gasto, criativo, público</span></div>
+          <div class="metric"><strong>Lead</strong><span>origem, canal, qualidade</span></div>
+          <div class="metric"><strong>Venda</strong><span>pedido finalizado</span></div>
+          <div class="metric"><strong>Margem</strong><span>receita menos custos</span></div>
+          <div class="metric"><strong>LTV</strong><span>valor ao longo da relação</span></div>
+        </div>
+        <div class="formula"><strong>Pergunta que o sistema deve responder:</strong> “Qual campanha trouxe clientes que compraram, geraram margem e voltaram?” — não apenas “quantas conversões a plataforma atribuiu?”.</div>
+      </div>
+    </section>
+
+    <section id="plano" aria-labelledby="plan-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Plano de implantação</span><h2 id="plan-title">Quatro movimentos</h2></div>
+          <p class="section-intro">A sequência evita automatizar dados inconsistentes e libera autonomia somente depois de existir medição e auditoria.</p>
+        </div>
+        <div class="roadmap">
+          <article class="phase"><h3>Inventário e contrato</h3><p>Mapear o que já existe e padronizar a comunicação.</p><ul><li>Agentes, fontes e timers</li><li>Dono de cada métrica</li><li>Resposta estruturada</li><li>Matriz de permissões</li></ul></article>
+          <article class="phase"><h3>Identidade e dados</h3><p>Costurar a jornada entre sistemas.</p><ul><li>Campanha → lead → pedido</li><li>IDs e deduplicação</li><li>Métricas oficiais</li><li>Proveniência e frescor</li></ul></article>
+          <article class="phase"><h3>Ferramentas do GPT</h3><p>Entregar funções pequenas e auditáveis.</p><ul><li>MCP para interação</li><li>CLI para rotinas estreitas</li><li>Views agregadas</li><li>Logs de chamadas</li></ul></article>
+          <article class="phase"><h3>Automação gradual</h3><p>Fechar o ciclo decisão → efeito.</p><ul><li>Alertas e tarefas</li><li>Aprovação humana</li><li>Ações reversíveis</li><li>Avaliação pós-ação</li></ul></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="controles" aria-labelledby="controls-title">
+      <div class="wrap">
+        <div class="section-head">
+          <div><span class="eyebrow">Guardrails</span><h2 id="controls-title">Automático, não desgovernado</h2></div>
+          <p class="section-intro">A autonomia deve ser liberada por ferramenta e por processo, com limites claros e prova de resultado.</p>
+        </div>
+        <div class="guardrails">
+          <article class="guardrail"><i>01</i><div><h3>Idempotência</h3><p>O mesmo evento não pode criar dois leads, pedidos ou ações.</p></div></article>
+          <article class="guardrail"><i>02</i><div><h3>Permissão mínima</h3><p>Cada agente acessa somente os dados e comandos necessários.</p></div></article>
+          <article class="guardrail"><i>03</i><div><h3>Aprovação proporcional</h3><p>Orçamento, pagamento, exclusão e produção exigem gates explícitos.</p></div></article>
+          <article class="guardrail"><i>04</i><div><h3>Auditoria completa</h3><p>Fonte, prompt, ferramenta, parâmetros, decisão e resultado ficam rastreáveis.</p></div></article>
+          <article class="guardrail"><i>05</i><div><h3>Fila de erro</h3><p>Falhas recebem retry limitado, DLQ e caminho de reprocessamento.</p></div></article>
+          <article class="guardrail"><i>06</i><div><h3>IA fora do crítico</h3><p>Fiscal, estoque e financeiro continuam com regras determinísticas.</p></div></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap"><span>JohnLLM Flow · protótipo visual local</span><span>Estado representado: outubro de 2026 · validar sistemas vivos antes de executar</span></div></footer>
+
+  <script>
+    const filters = document.querySelectorAll('.filter');
+    const steps = document.querySelectorAll('.flow-step');
+    filters.forEach((button) => {
+      button.addEventListener('click', () => {
+        const selected = button.dataset.filter;
+        filters.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        steps.forEach((step) => {
+          const visible = selected === 'all' || step.dataset.domain.split(' ').includes(selected);
+          step.classList.toggle('is-muted', !visible);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
